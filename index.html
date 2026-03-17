@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Briefing de Proyecto Web</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #c8f55a;
+      --accent2: #f5c85a;
+      --text: #f0ede8;
+      --text-muted: #8a8680;
+      --radius: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── HEADER ───────────────────────────── */
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 40px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(200,245,90,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 860px; margin: 0 auto; position: relative; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #0e0e0e;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 540px;
+    }
+
+    /* ── LAYOUT ───────────────────────────── */
+    .wrapper { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── PROGRESS ─────────────────────────── */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .progress-step.active { color: var(--accent); }
+    .progress-step.done { color: var(--text-muted); }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all .2s;
+    }
+    .progress-step.active .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0e0e0e;
+    }
+    .progress-step.done .step-num {
+      background: var(--surface2);
+      color: var(--text-muted);
+    }
+    .step-divider {
+      flex: 1;
+      min-width: 20px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── SECTIONS ─────────────────────────── */
+    .section { display: none; animation: fadeUp .35s ease forwards; }
+    .section.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .section-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 1.7rem; font-weight: 400; line-height: 1.2; }
+    .section-subtitle { font-size: 0.875rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── CARDS ────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── GRID ─────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── FIELDS ───────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .field label span { color: var(--accent); }
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+      resize: vertical;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--text-muted); }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus { border-color: var(--accent); }
+    .field select option { background: #1e1e1e; }
+
+    /* ── COLOR PICKER ROW ─────────────────── */
+    .color-row { display: flex; align-items: center; gap: 10px; }
+    .color-row input[type="color"] {
+      width: 42px; height: 42px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      padding: 3px;
+      cursor: pointer;
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .color-row input[type="text"] { flex: 1; }
+
+    /* ── COLOR PALETTE ────────────────────── */
+    .palette-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    .palette-item {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      min-width: 90px;
+    }
+    .palette-item label { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+    /* ── UPLOAD ZONE ──────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .upload-zone:hover {
+      border-color: var(--accent);
+      background: rgba(200,245,90,0.04);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 28px; margin-bottom: 10px; }
+    .upload-zone p { font-size: 13px; color: var(--text-muted); }
+    .upload-zone strong { color: var(--text); font-weight: 500; }
+
+    /* ── CHECKBOX GRID ────────────────────── */
+    .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: border-color .2s, background .2s;
+    }
+    .check-item:hover { border-color: var(--accent); }
+    .check-item input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+    .check-item.selected { border-color: var(--accent); background: rgba(200,245,90,0.06); }
+
+    /* ── RADIO ────────────────────────────── */
+    .radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .radio-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 16px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all .2s;
+    }
+    .radio-item:hover { border-color: var(--accent); }
+    .radio-item input { accent-color: var(--accent); cursor: pointer; }
+    .radio-item.selected { border-color: var(--accent); background: rgba(200,245,90,0.06); }
+
+    /* ── RANGE ────────────────────────────── */
+    .range-wrap { display: flex; align-items: center; gap: 14px; }
+    .range-wrap input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 4px;
+    }
+    .range-val {
+      min-width: 60px;
+      text-align: right;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── REFERENCE URLS ───────────────────── */
+    .url-list { display: flex; flex-direction: column; gap: 8px; }
+    .url-entry { display: flex; gap: 8px; align-items: center; }
+    .url-entry input { flex: 1; }
+    .btn-remove {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s;
+    }
+    .btn-remove:hover { border-color: #f55a5a; color: #f55a5a; }
+    .btn-add {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border: 1.5px dashed var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .2s;
+      margin-top: 6px;
+    }
+    .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── NAV BUTTONS ──────────────────────── */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0e0e0e;
+    }
+    .btn-primary:hover { background: #d4ff6a; transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--text-muted); color: var(--text); }
+    .btn-submit {
+      background: var(--accent2);
+      color: #0e0e0e;
+      padding: 14px 36px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .btn-submit:hover { background: #ffda6a; transform: translateY(-1px); }
+
+    /* ── SUMMARY ──────────────────────────── */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 600px) { .summary-grid { grid-template-columns: 1fr; } }
+    .summary-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .summary-item .s-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+    .summary-item .s-val { font-size: 14px; font-weight: 500; word-break: break-word; }
+
+    /* ── TOAST ────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 32px; right: 32px;
+      background: var(--accent);
+      color: #0e0e0e;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all .3s;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── FONT PREVIEW ─────────────────────── */
+    .font-preview {
+      margin-top: 10px;
+      padding: 14px;
+      background: var(--surface2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 22px;
+      color: var(--text);
+      min-height: 52px;
+    }
+
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="badge">Brief de Proyecto</span>
+    <h1>Cuéntanos sobre<br/>tu <em>proyecto web</em></h1>
+    <p>Completa este formulario para que podamos entender tu marca, objetivos y necesidades antes de comenzar a diseñar.</p>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="progress-step active" onclick="goTo(0)"><div class="step-num">1</div> Empresa</div>
+    <div class="step-divider"></div>
+    <div class="progress-step" onclick="goTo(1)"><div class="step-num">2</div> Identidad</div>
+    <div class="step-divider"></div>
+    <div class="progress-step" onclick="goTo(2)"><div class="step-num">3</div> Contenido</div>
+    <div class="step-divider"></div>
+    <div class="progress-step" onclick="goTo(3)"><div class="step-num">4</div> Recursos</div>
+    <div class="step-divider"></div>
+    <div class="progress-step" onclick="goTo(4)"><div class="step-num">5</div> Proyecto</div>
+    <div class="step-divider"></div>
+    <div class="progress-step" onclick="goTo(5)"><div class="step-num">6</div> Resumen</div>
+  </div>
+
+  <!-- ══ SECCIÓN 1: DATOS DE LA EMPRESA ══ -->
+  <div class="section active" id="sec-0">
+    <div class="section-header">
+      <div class="section-icon">🏢</div>
+      <div>
+        <div class="section-title">Datos de la empresa</div>
+        <div class="section-subtitle">Información general del cliente y su negocio</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Información básica</div>
+      <div class="grid-2" style="gap:16px">
+        <div class="field">
+          <label>Nombre de la empresa <span>*</span></label>
+          <input type="text" id="empresa-nombre" placeholder="Ej: Innovatech S.A." />
+        </div>
+        <div class="field">
+          <label>Nombre de contacto <span>*</span></label>
+          <input type="text" id="contacto-nombre" placeholder="Nombre completo" />
+        </div>
+        <div class="field">
+          <label>Correo electrónico <span>*</span></label>
+          <input type="email" id="contacto-email" placeholder="correo@empresa.com" />
+        </div>
+        <div class="field">
+          <label>Teléfono / WhatsApp</label>
+          <input type="tel" id="contacto-tel" placeholder="+56 9 xxxx xxxx" />
+        </div>
+        <div class="field">
+          <label>Sitio web actual</label>
+          <input type="url" id="empresa-web" placeholder="https://www.empresa.com" />
+        </div>
+        <div class="field">
+          <label>País / Ciudad</label>
+          <input type="text" id="empresa-ciudad" placeholder="Santiago, Chile" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Descripción del negocio</div>
+      <div class="field" style="margin-bottom:16px">
+        <label>¿A qué se dedica la empresa? <span>*</span></label>
+        <textarea id="empresa-descripcion" rows="3" placeholder="Describe brevemente el rubro, productos o servicios que ofrece..."></textarea>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label>¿Cuál es su propuesta de valor?</label>
+        <textarea id="empresa-valor" rows="2" placeholder="¿Qué los diferencia de la competencia?"></textarea>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Público objetivo <span>*</span></label>
+          <textarea id="empresa-publico" rows="2" placeholder="Ej: Mujeres 25–45 años, profesionales..."></textarea>
+        </div>
+        <div class="field">
+          <label>Principales competidores</label>
+          <textarea id="empresa-competidores" rows="2" placeholder="Nombres o URLs de competidores"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn btn-primary" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 2: IDENTIDAD VISUAL ══ -->
+  <div class="section" id="sec-1">
+    <div class="section-header">
+      <div class="section-icon">🎨</div>
+      <div>
+        <div class="section-title">Identidad visual</div>
+        <div class="section-subtitle">Colores, tipografía y estilo de marca</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Paleta de colores</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:18px;">Indica los colores corporativos. Puedes usar el selector o escribir el código hexadecimal.</p>
+
+      <div class="palette-grid">
+        <div class="palette-item">
+          <div class="color-row">
+            <input type="color" id="color1-pick" value="#c8f55a" oninput="syncColor('color1')" />
+            <input type="text" id="color1" value="#c8f55a" placeholder="#000000" oninput="syncPick('color1')" />
+          </div>
+          <label>Color primario</label>
+        </div>
+        <div class="palette-item">
+          <div class="color-row">
+            <input type="color" id="color2-pick" value="#0e0e0e" oninput="syncColor('color2')" />
+            <input type="text" id="color2" value="#0e0e0e" placeholder="#000000" oninput="syncPick('color2')" />
+          </div>
+          <label>Color secundario</label>
+        </div>
+        <div class="palette-item">
+          <div class="color-row">
+            <input type="color" id="color3-pick" value="#ffffff" oninput="syncColor('color3')" />
+            <input type="text" id="color3" value="#ffffff" placeholder="#000000" oninput="syncPick('color3')" />
+          </div>
+          <label>Color de acento</label>
+        </div>
+        <div class="palette-item">
+          <div class="color-row">
+            <input type="color" id="color4-pick" value="#f0ede8" oninput="syncColor('color4')" />
+            <input type="text" id="color4" value="#f0ede8" placeholder="#000000" oninput="syncPick('color4')" />
+          </div>
+          <label>Color de texto</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <div class="field">
+        <label>¿Tiene definida una guía de marca / brand guidelines?</label>
+        <div class="radio-group" id="guia-marca">
+          <label class="radio-item"><input type="radio" name="guia" value="Sí, la tenemos" onchange="radioSelect(this)" /> Sí, la tenemos</label>
+          <label class="radio-item"><input type="radio" name="guia" value="En proceso" onchange="radioSelect(this)" /> En proceso</label>
+          <label class="radio-item"><input type="radio" name="guia" value="No tenemos" onchange="radioSelect(this)" /> No tenemos</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tipografía</div>
+      <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+        <div class="field">
+          <label>Tipografía principal (títulos)</label>
+          <input type="text" id="font-titulo" placeholder="Ej: Playfair Display, Montserrat" oninput="previewFont('titulo')" />
+          <div class="font-preview" id="font-titulo-preview" style="font-size:28px;">Aa — Título</div>
+        </div>
+        <div class="field">
+          <label>Tipografía de cuerpo (párrafos)</label>
+          <input type="text" id="font-cuerpo" placeholder="Ej: Inter, Lato, Open Sans" oninput="previewFont('cuerpo')" />
+          <div class="font-preview" id="font-cuerpo-preview" style="font-size:15px;">El texto de la página se verá así. Legible y limpio.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Tiene tipografías ya licenciadas?</label>
+        <textarea id="fonts-notas" rows="2" placeholder="Nombra las fuentes o deja en blanco si no hay preferencias"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Estilo visual general</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿Cómo describirías el estilo deseado?</label>
+        <div class="check-grid" id="estilo-grid">
+          <label class="check-item"><input type="checkbox" value="Moderno y minimalista" onchange="checkSelect(this)" /> Moderno y minimalista</label>
+          <label class="check-item"><input type="checkbox" value="Clásico y elegante" onchange="checkSelect(this)" /> Clásico y elegante</label>
+          <label class="check-item"><input type="checkbox" value="Corporativo y formal" onchange="checkSelect(this)" /> Corporativo y formal</label>
+          <label class="check-item"><input type="checkbox" value="Creativo y artístico" onchange="checkSelect(this)" /> Creativo y artístico</label>
+          <label class="check-item"><input type="checkbox" value="Juvenil y dinámico" onchange="checkSelect(this)" /> Juvenil y dinámico</label>
+          <label class="check-item"><input type="checkbox" value="Tecnológico / Futurista" onchange="checkSelect(this)" /> Tecnológico / Futurista</label>
+          <label class="check-item"><input type="checkbox" value="Orgánico / Natural" onchange="checkSelect(this)" /> Orgánico / Natural</label>
+          <label class="check-item"><input type="checkbox" value="Lujoso / Premium" onchange="checkSelect(this)" /> Lujoso / Premium</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Referencias de sitios que te gustan (estilo, no rubro)</label>
+        <div class="url-list" id="ref-urls">
+          <div class="url-entry"><input type="url" placeholder="https://sitio-referencia.com" /><button class="btn-remove" onclick="removeUrl(this)">×</button></div>
+        </div>
+        <button class="btn-add" onclick="addUrl()">＋ Agregar referencia</button>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 3: CONTENIDO ══ -->
+  <div class="section" id="sec-2">
+    <div class="section-header">
+      <div class="section-icon">📄</div>
+      <div>
+        <div class="section-title">Estructura y contenido</div>
+        <div class="section-subtitle">Páginas, secciones y tipo de contenido del sitio</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tipo de sitio web</div>
+      <div class="radio-group" id="tipo-sitio">
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Sitio corporativo" onchange="radioSelect(this)" /> Sitio corporativo</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="E-commerce / Tienda online" onchange="radioSelect(this)" /> E-commerce / Tienda online</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Landing page" onchange="radioSelect(this)" /> Landing page</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Portafolio" onchange="radioSelect(this)" /> Portafolio</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Blog / Revista" onchange="radioSelect(this)" /> Blog / Revista</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Plataforma / App web" onchange="radioSelect(this)" /> Plataforma / App web</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Páginas y secciones</div>
+      <div class="field" style="margin-bottom:18px;">
+        <label>¿Qué páginas necesita el sitio? Selecciona las que apliquen:</label>
+        <div class="check-grid" id="paginas-grid">
+          <label class="check-item"><input type="checkbox" value="Inicio (Home)" onchange="checkSelect(this)" /> Inicio (Home)</label>
+          <label class="check-item"><input type="checkbox" value="Sobre nosotros" onchange="checkSelect(this)" /> Sobre nosotros</label>
+          <label class="check-item"><input type="checkbox" value="Servicios" onchange="checkSelect(this)" /> Servicios</label>
+          <label class="check-item"><input type="checkbox" value="Productos" onchange="checkSelect(this)" /> Productos</label>
+          <label class="check-item"><input type="checkbox" value="Portafolio / Trabajos" onchange="checkSelect(this)" /> Portafolio / Trabajos</label>
+          <label class="check-item"><input type="checkbox" value="Blog / Noticias" onchange="checkSelect(this)" /> Blog / Noticias</label>
+          <label class="check-item"><input type="checkbox" value="Equipo" onchange="checkSelect(this)" /> Equipo</label>
+          <label class="check-item"><input type="checkbox" value="Testimonios" onchange="checkSelect(this)" /> Testimonios</label>
+          <label class="check-item"><input type="checkbox" value="Preguntas frecuentes" onchange="checkSelect(this)" /> Preguntas frecuentes</label>
+          <label class="check-item"><input type="checkbox" value="Contacto" onchange="checkSelect(this)" /> Contacto</label>
+          <label class="check-item"><input type="checkbox" value="Política de privacidad" onchange="checkSelect(this)" /> Política de privacidad</label>
+          <label class="check-item"><input type="checkbox" value="Carrito / Checkout" onchange="checkSelect(this)" /> Carrito / Checkout</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Páginas adicionales o notas sobre la estructura</label>
+        <textarea id="paginas-notas" rows="2" placeholder="Describe secciones especiales o flujos particulares..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Idiomas y textos</div>
+      <div class="grid-2" style="gap:16px">
+        <div class="field">
+          <label>Idioma(s) del sitio</label>
+          <div class="check-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="check-item"><input type="checkbox" value="Español" onchange="checkSelect(this)" checked /> Español</label>
+            <label class="check-item"><input type="checkbox" value="Inglés" onchange="checkSelect(this)" /> Inglés</label>
+            <label class="check-item"><input type="checkbox" value="Portugués" onchange="checkSelect(this)" /> Portugués</label>
+            <label class="check-item"><input type="checkbox" value="Otro" onchange="checkSelect(this)" /> Otro</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>¿El cliente provee los textos?</label>
+          <div class="radio-group" style="flex-direction:column; gap:8px;" id="textos-radio">
+            <label class="radio-item"><input type="radio" name="textos" value="Sí, los entrego yo" onchange="radioSelect(this)" /> Sí, los entrego yo</label>
+            <label class="radio-item"><input type="radio" name="textos" value="Necesito ayuda con redacción" onchange="radioSelect(this)" /> Necesito ayuda con redacción</label>
+            <label class="radio-item"><input type="radio" name="textos" value="Combinado" onchange="radioSelect(this)" /> Combinado</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 4: RECURSOS GRÁFICOS ══ -->
+  <div class="section" id="sec-3">
+    <div class="section-header">
+      <div class="section-icon">🖼️</div>
+      <div>
+        <div class="section-title">Recursos gráficos</div>
+        <div class="section-subtitle">Logo, imágenes, iconos y materiales visuales</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Logo</div>
+      <div class="grid-2" style="gap:16px; margin-bottom:18px;">
+        <div class="field">
+          <label>¿Tiene logo?</label>
+          <div class="radio-group" style="flex-direction:column; gap:8px;" id="logo-radio">
+            <label class="radio-item"><input type="radio" name="logo" value="Sí, en formato vectorial (AI/SVG/EPS)" onchange="radioSelect(this)" /> Sí, vectorial (AI/SVG/EPS)</label>
+            <label class="radio-item"><input type="radio" name="logo" value="Sí, solo en PNG/JPG" onchange="radioSelect(this)" /> Sí, solo PNG/JPG</label>
+            <label class="radio-item"><input type="radio" name="logo" value="No, necesito diseñar logo" onchange="radioSelect(this)" /> No, necesito diseñar logo</label>
+            <label class="radio-item"><input type="radio" name="logo" value="Está en proceso" onchange="radioSelect(this)" /> Está en proceso</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Versiones del logo disponibles</label>
+          <div class="check-grid" style="grid-template-columns:1fr 1fr;">
+            <label class="check-item"><input type="checkbox" value="Fondo claro" onchange="checkSelect(this)" /> Fondo claro</label>
+            <label class="check-item"><input type="checkbox" value="Fondo oscuro" onchange="checkSelect(this)" /> Fondo oscuro</label>
+            <label class="check-item"><input type="checkbox" value="Isotipo solo" onchange="checkSelect(this)" /> Isotipo solo</label>
+            <label class="check-item"><input type="checkbox" value="Horizontal" onchange="checkSelect(this)" /> Horizontal</label>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Subir archivos del logo</label>
+        <div class="upload-zone">
+          <input type="file" accept=".svg,.ai,.eps,.png,.jpg,.pdf" multiple />
+          <div class="upload-icon">📁</div>
+          <p><strong>Arrastra archivos aquí</strong> o haz clic para seleccionar</p>
+          <p style="margin-top:4px; font-size:12px;">SVG, AI, EPS, PNG, JPG — hasta 20MB</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Imágenes y fotografía</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿El cliente provee fotografías del negocio?</label>
+        <div class="radio-group" id="fotos-radio">
+          <label class="radio-item"><input type="radio" name="fotos" value="Sí, tengo fotografía profesional" onchange="radioSelect(this)" /> Sí, fotografía profesional</label>
+          <label class="radio-item"><input type="radio" name="fotos" value="Sí, pero son fotos de celular" onchange="radioSelect(this)" /> Sí, fotos de celular</label>
+          <label class="radio-item"><input type="radio" name="fotos" value="No, usar banco de imágenes" onchange="radioSelect(this)" /> Usar banco de imágenes</label>
+          <label class="radio-item"><input type="radio" name="fotos" value="Necesito sesión fotográfica" onchange="radioSelect(this)" /> Necesito sesión fotográfica</label>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>Subir imágenes disponibles</label>
+        <div class="upload-zone">
+          <input type="file" accept="image/*" multiple />
+          <div class="upload-icon">🏞️</div>
+          <p><strong>Arrastra imágenes aquí</strong> o haz clic para seleccionar</p>
+          <p style="margin-top:4px; font-size:12px;">JPG, PNG, WEBP — múltiples archivos permitidos</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>Notas sobre el estilo fotográfico deseado</label>
+        <textarea id="fotos-notas" rows="2" placeholder="Ej: fotos cálidas, estilo editorial, mucho contraste, blanco y negro..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Otros recursos</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿Tiene otros materiales visuales?</label>
+        <div class="check-grid" id="recursos-grid">
+          <label class="check-item"><input type="checkbox" value="Iconos propios" onchange="checkSelect(this)" /> Iconos propios</label>
+          <label class="check-item"><input type="checkbox" value="Ilustraciones" onchange="checkSelect(this)" /> Ilustraciones</label>
+          <label class="check-item"><input type="checkbox" value="Patrones / texturas" onchange="checkSelect(this)" /> Patrones / texturas</label>
+          <label class="check-item"><input type="checkbox" value="Videos" onchange="checkSelect(this)" /> Videos</label>
+          <label class="check-item"><input type="checkbox" value="Animaciones" onchange="checkSelect(this)" /> Animaciones</label>
+          <label class="check-item"><input type="checkbox" value="Documentos PDF" onchange="checkSelect(this)" /> Documentos PDF</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Subir otros archivos gráficos</label>
+        <div class="upload-zone">
+          <input type="file" multiple />
+          <div class="upload-icon">📦</div>
+          <p><strong>Arrastra archivos aquí</strong> o haz clic para seleccionar</p>
+          <p style="margin-top:4px; font-size:12px;">Cualquier formato — ZIP, PDF, MP4, etc.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="next()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 5: PROYECTO ══ -->
+  <div class="section" id="sec-4">
+    <div class="section-header">
+      <div class="section-icon">⚙️</div>
+      <div>
+        <div class="section-title">Detalles del proyecto</div>
+        <div class="section-subtitle">Plazos, presupuesto, funcionalidades y requerimientos técnicos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Objetivos del sitio web</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿Cuál es el objetivo principal? <span>*</span></label>
+        <div class="check-grid" id="objetivo-grid">
+          <label class="check-item"><input type="checkbox" value="Generar ventas" onchange="checkSelect(this)" /> Generar ventas</label>
+          <label class="check-item"><input type="checkbox" value="Captar leads / contactos" onchange="checkSelect(this)" /> Captar leads / contactos</label>
+          <label class="check-item"><input type="checkbox" value="Dar a conocer la marca" onchange="checkSelect(this)" /> Dar a conocer la marca</label>
+          <label class="check-item"><input type="checkbox" value="Posicionar en Google (SEO)" onchange="checkSelect(this)" /> Posicionar en Google (SEO)</label>
+          <label class="check-item"><input type="checkbox" value="Dar información / educar" onchange="checkSelect(this)" /> Dar información / educar</label>
+          <label class="check-item"><input type="checkbox" value="Mostrar portafolio" onchange="checkSelect(this)" /> Mostrar portafolio</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Funcionalidades técnicas</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿Qué funcionalidades necesita el sitio?</label>
+        <div class="check-grid" id="func-grid">
+          <label class="check-item"><input type="checkbox" value="Formulario de contacto" onchange="checkSelect(this)" /> Formulario de contacto</label>
+          <label class="check-item"><input type="checkbox" value="Chat en vivo / WhatsApp" onchange="checkSelect(this)" /> Chat / WhatsApp</label>
+          <label class="check-item"><input type="checkbox" value="Reservas / Calendario" onchange="checkSelect(this)" /> Reservas / Calendario</label>
+          <label class="check-item"><input type="checkbox" value="Blog con CMS" onchange="checkSelect(this)" /> Blog con CMS</label>
+          <label class="check-item"><input type="checkbox" value="Login / Área privada" onchange="checkSelect(this)" /> Login / Área privada</label>
+          <label class="check-item"><input type="checkbox" value="Integración redes sociales" onchange="checkSelect(this)" /> Integración redes sociales</label>
+          <label class="check-item"><input type="checkbox" value="Pasarela de pagos" onchange="checkSelect(this)" /> Pasarela de pagos</label>
+          <label class="check-item"><input type="checkbox" value="Newsletter / Email marketing" onchange="checkSelect(this)" /> Newsletter / Email marketing</label>
+          <label class="check-item"><input type="checkbox" value="Google Analytics" onchange="checkSelect(this)" /> Google Analytics</label>
+          <label class="check-item"><input type="checkbox" value="Mapa / Google Maps" onchange="checkSelect(this)" /> Mapa / Google Maps</label>
+          <label class="check-item"><input type="checkbox" value="Multilenguaje" onchange="checkSelect(this)" /> Multilenguaje</label>
+          <label class="check-item"><input type="checkbox" value="Optimización SEO" onchange="checkSelect(this)" /> Optimización SEO</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Otras funcionalidades o integraciones</label>
+        <textarea id="func-extra" rows="2" placeholder="Ej: CRM, ERP, pasarelas específicas, APIs externas..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Plazos y presupuesto</div>
+      <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+        <div class="field">
+          <label>Fecha de entrega ideal</label>
+          <input type="date" id="fecha-entrega" />
+        </div>
+        <div class="field">
+          <label>¿Tiene dominio y hosting?</label>
+          <div class="radio-group" style="flex-direction:column; gap:8px;" id="hosting-radio">
+            <label class="radio-item"><input type="radio" name="hosting" value="Sí, tengo ambos" onchange="radioSelect(this)" /> Sí, tengo ambos</label>
+            <label class="radio-item"><input type="radio" name="hosting" value="Solo el dominio" onchange="radioSelect(this)" /> Solo el dominio</label>
+            <label class="radio-item"><input type="radio" name="hosting" value="No, necesito cotizar" onchange="radioSelect(this)" /> No, necesito cotizar</label>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>Rango de presupuesto aproximado</label>
+        <div class="radio-group" id="presupuesto-radio">
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Menos de $500 USD" onchange="radioSelect(this)" /> &lt; $500 USD</label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="$500 – $1.500 USD" onchange="radioSelect(this)" /> $500 – $1.500</label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="$1.500 – $5.000 USD" onchange="radioSelect(this)" /> $1.500 – $5.000</label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Más de $5.000 USD" onchange="radioSelect(this)" /> &gt; $5.000 USD</label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Por definir" onchange="radioSelect(this)" /> Por definir</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Urgencia del proyecto</label>
+        <div class="range-wrap">
+          <input type="range" id="urgencia" min="1" max="5" value="3" oninput="updateRange()" />
+          <span class="range-val" id="urgencia-val">Media</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Información adicional</div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>¿Algo más que quieras contarnos?</label>
+        <textarea id="notas-finales" rows="4" placeholder="Restricciones técnicas, preferencias especiales, inspiraciones, lo que sea relevante para el proyecto..."></textarea>
+      </div>
+      <div class="field">
+        <label>¿Cómo prefieres que te contactemos?</label>
+        <div class="radio-group" id="contacto-radio">
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Email" onchange="radioSelect(this)" /> Email</label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="WhatsApp" onchange="radioSelect(this)" /> WhatsApp</label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Videollamada" onchange="radioSelect(this)" /> Videollamada</label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Presencial" onchange="radioSelect(this)" /> Presencial</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="next()">Ver resumen →</button>
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 6: RESUMEN ══ -->
+  <div class="section" id="sec-5">
+    <div class="section-header">
+      <div class="section-icon">✅</div>
+      <div>
+        <div class="section-title">Resumen del briefing</div>
+        <div class="section-subtitle">Revisa la información antes de enviar</div>
+      </div>
+    </div>
+
+    <div class="card" id="summary-card">
+      <div class="card-title">Datos recopilados</div>
+      <div class="summary-grid" id="summary-grid">
+        <!-- generado por JS -->
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prev()">← Editar</button>
+      <button class="btn btn-submit" onclick="submitForm()">📨 Enviar Briefing</button>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<div id="toast">✓ Briefing enviado correctamente</div>
+
+<script>
+  let current = 0;
+  const total = 6;
+
+  function goTo(i) {
+    document.getElementById('sec-' + current).classList.remove('active');
+    document.querySelectorAll('.progress-step')[current].classList.remove('active');
+    document.querySelectorAll('.progress-step')[current].classList.add('done');
+    current = i;
+    document.getElementById('sec-' + current).classList.add('active');
+    document.querySelectorAll('.progress-step').forEach((s, idx) => {
+      s.classList.remove('active', 'done');
+      if (idx < current) s.classList.add('done');
+      if (idx === current) s.classList.add('active');
+    });
+    if (i === 5) buildSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function next() { if (current < total - 1) goTo(current + 1); }
+  function prev() { if (current > 0) goTo(current - 1); }
+
+  // Color sync
+  function syncColor(id) {
+    const pick = document.getElementById(id + '-pick');
+    document.getElementById(id).value = pick.value;
+  }
+  function syncPick(id) {
+    const val = document.getElementById(id).value;
+    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+      document.getElementById(id + '-pick').value = val;
+    }
+  }
+
+  // Font preview
+  function previewFont(type) {
+    const input = document.getElementById('font-' + type).value;
+    const preview = document.getElementById('font-' + type + '-preview');
+    if (input) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(input)}&display=swap`;
+      document.head.appendChild(link);
+      preview.style.fontFamily = `'${input}', serif`;
+    }
+  }
+
+  // URL list
+  function addUrl() {
+    const list = document.getElementById('ref-urls');
+    const div = document.createElement('div');
+    div.className = 'url-entry';
+    div.innerHTML = `<input type="url" placeholder="https://sitio-referencia.com" /><button class="btn-remove" onclick="removeUrl(this)">×</button>`;
+    list.appendChild(div);
+  }
+  function removeUrl(btn) {
+    const list = document.getElementById('ref-urls');
+    if (list.children.length > 1) btn.parentElement.remove();
+  }
+
+  // Checkbox highlight
+  function checkSelect(el) {
+    el.closest('.check-item').classList.toggle('selected', el.checked);
+  }
+
+  // Radio highlight
+  function radioSelect(el) {
+    const name = el.name;
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+      r.closest('.radio-item').classList.remove('selected');
+    });
+    el.closest('.radio-item').classList.add('selected');
+  }
+
+  // Range label
+  const urgLabels = ['', 'Muy baja', 'Baja', 'Media', 'Alta', 'Muy urgente'];
+  function updateRange() {
+    const v = document.getElementById('urgencia').value;
+    document.getElementById('urgencia-val').textContent = urgLabels[v];
+  }
+
+  // Build summary
+  function buildSummary() {
+    const grid = document.getElementById('summary-grid');
+    const items = [
+      ['Empresa', v('empresa-nombre')],
+      ['Contacto', v('contacto-nombre')],
+      ['Email', v('contacto-email')],
+      ['Teléfono', v('contacto-tel')],
+      ['Web actual', v('empresa-web')],
+      ['Ciudad', v('empresa-ciudad')],
+      ['Descripción', v('empresa-descripcion')],
+      ['Público objetivo', v('empresa-publico')],
+      ['Color primario', v('color1') + ' 🎨'],
+      ['Color secundario', v('color2') + ' 🎨'],
+      ['Color acento', v('color3') + ' 🎨'],
+      ['Color texto', v('color4') + ' 🎨'],
+      ['Tipografía títulos', v('font-titulo')],
+      ['Tipografía cuerpo', v('font-cuerpo')],
+      ['Fecha entrega', v('fecha-entrega')],
+      ['Notas finales', v('notas-finales')],
+    ];
+
+    // checked boxes
+    const estilos = [...document.querySelectorAll('#estilo-grid input:checked')].map(x => x.value).join(', ');
+    const paginas = [...document.querySelectorAll('#paginas-grid input:checked')].map(x => x.value).join(', ');
+    const funciones = [...document.querySelectorAll('#func-grid input:checked')].map(x => x.value).join(', ');
+    const objetivos = [...document.querySelectorAll('#objetivo-grid input:checked')].map(x => x.value).join(', ');
+
+    if (estilos) items.push(['Estilo visual', estilos]);
+    if (paginas) items.push(['Páginas', paginas]);
+    if (funciones) items.push(['Funcionalidades', funciones]);
+    if (objetivos) items.push(['Objetivos', objetivos]);
+
+    // radios
+    const radios = ['guia', 'tipo-sitio', 'textos', 'logo', 'fotos', 'hosting', 'presupuesto', 'contacto-pref'];
+    radios.forEach(name => {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      if (el) items.push([name.charAt(0).toUpperCase() + name.slice(1).replace('-', ' '), el.value]);
+    });
+
+    grid.innerHTML = items
+      .filter(([, val]) => val && val.trim())
+      .map(([label, val]) => `<div class="summary-item"><div class="s-label">${label}</div><div class="s-val">${val}</div></div>`)
+      .join('');
+  }
+
+  function v(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+
+  function submitForm() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+    // Aquí puedes conectar con un backend, emailjs, formspree, etc.
+  }
+
+  // Init
+  updateRange();
+</script>
+</body>
+</html>
