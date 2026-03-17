@@ -1114,11 +1114,92 @@
     return el ? el.value : '';
   }
 
-  function submitForm() {
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyzyitzSg3IEZo6JBqFkFQwrhUVfUB7cZvUL1klyp7NT1BgxbhnRVUnZeJVj0vE7In/exec';
+
+  async function submitForm() {
+    const btn = document.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.textContent = '⏳ Enviando...';
+
+    // Recopilar todos los datos del formulario
+    const data = {
+      empresa:        v('empresa-nombre'),
+      contacto:       v('contacto-nombre'),
+      email:          v('contacto-email'),
+      telefono:       v('contacto-tel'),
+      ciudad:         v('empresa-ciudad'),
+      webActual:      v('empresa-web'),
+      descripcion:    v('empresa-descripcion'),
+      publico:        v('empresa-publico'),
+      competidores:   v('empresa-competidores'),
+      color1:         v('color1'),
+      color2:         v('color2'),
+      color3:         v('color3'),
+      color4:         v('color4'),
+      fontTitulo:     v('font-titulo'),
+      fontCuerpo:     v('font-cuerpo'),
+      fontsNotas:     v('fonts-notas'),
+      estilos:        [...document.querySelectorAll('#estilo-grid input:checked')].map(x => x.value).join(', '),
+      tipoSitio:      checkedRadio('tipo-sitio'),
+      paginas:        [...document.querySelectorAll('#paginas-grid input:checked')].map(x => x.value).join(', '),
+      paginasNotas:   v('paginas-notas'),
+      idiomas:        [...document.querySelectorAll('input[value="Español"], input[value="Inglés"], input[value="Portugués"], input[value="Otro"]']).filter(x => x.checked).map(x => x.value).join(', '),
+      textos:         checkedRadio('textos'),
+      logo:           checkedRadio('logo'),
+      fotosEstilo:    checkedRadio('fotos'),
+      fotosNotas:     v('fotos-notas'),
+      recursos:       [...document.querySelectorAll('#recursos-grid input:checked')].map(x => x.value).join(', '),
+      objetivos:      [...document.querySelectorAll('#objetivo-grid input:checked')].map(x => x.value).join(', '),
+      funcionalidades:[...document.querySelectorAll('#func-grid input:checked')].map(x => x.value).join(', '),
+      funcExtra:      v('func-extra'),
+      fechaEntrega:   v('fecha-entrega'),
+      hosting:        checkedRadio('hosting'),
+      presupuesto:    checkedRadio('presupuesto'),
+      urgencia:       document.getElementById('urgencia-val').textContent,
+      contactoPref:   checkedRadio('contacto-pref'),
+      notas:          v('notas-finales'),
+    };
+
+    // Validación básica
+    if (!data.empresa || !data.email) {
+      showToast('⚠️ Completa al menos el nombre de la empresa y el email.', '#f5a55a');
+      btn.disabled = false;
+      btn.textContent = '📨 Enviar Briefing';
+      return;
+    }
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      // no-cors no retorna body, asumimos éxito si no hay error
+      showToast('✅ Briefing enviado correctamente', 'var(--accent)');
+      btn.textContent = '✅ Enviado';
+
+      // Mostrar link a Drive si viene en la respuesta
+    } catch (err) {
+      showToast('❌ Error al enviar. Intenta nuevamente.', '#f55a5a');
+      btn.disabled = false;
+      btn.textContent = '📨 Enviar Briefing';
+    }
+  }
+
+  function checkedRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+  }
+
+  function showToast(msg, color) {
     const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = color || 'var(--accent)';
+    toast.style.color = (color === 'var(--accent)' || !color) ? '#0e0e0e' : '#fff';
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3500);
-    // Aquí puedes conectar con un backend, emailjs, formspree, etc.
+    setTimeout(() => toast.classList.remove('show'), 4000);
   }
 
   // Theme toggle
