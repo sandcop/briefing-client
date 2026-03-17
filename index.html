@@ -16,7 +16,53 @@
       --text: #f0ede8;
       --text-muted: #8a8680;
       --radius: 12px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.3);
     }
+
+    html.light {
+      --bg: #f4f1eb;
+      --surface: #ffffff;
+      --surface2: #ece9e2;
+      --border: #d8d3ca;
+      --accent: #5a8f00;
+      --accent2: #b87800;
+      --text: #1a1a1a;
+      --text-muted: #6e6a63;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    html { transition: background .3s, color .3s; }
+    body { transition: background .3s, color .3s; }
+
+    /* ── THEME TOGGLE ─────────────────────── */
+    #theme-toggle {
+      position: fixed;
+      bottom: 32px;
+      left: 32px;
+      z-index: 1000;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transition: all .25s;
+    }
+    #theme-toggle:hover {
+      transform: scale(1.1) rotate(15deg);
+      border-color: var(--accent);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+    }
+    #theme-toggle .icon-dark { display: block; }
+    #theme-toggle .icon-light { display: none; }
+    html.light #theme-toggle .icon-dark { display: none; }
+    html.light #theme-toggle .icon-light { display: block; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -210,7 +256,7 @@
     .field input:focus,
     .field select:focus,
     .field textarea:focus { border-color: var(--accent); }
-    .field select option { background: #1e1e1e; }
+    .field select option { background: var(--surface2); }
 
     /* ── COLOR PICKER ROW ─────────────────── */
     .color-row { display: flex; align-items: center; gap: 10px; }
@@ -929,6 +975,11 @@
 
 </div><!-- /wrapper -->
 
+<button id="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+  <span class="icon-dark">🌙</span>
+  <span class="icon-light">☀️</span>
+</button>
+
 <div id="toast">✓ Briefing enviado correctamente</div>
 
 <script>
@@ -1068,6 +1119,16 @@
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3500);
     // Aquí puedes conectar con un backend, emailjs, formspree, etc.
+  }
+
+  // Theme toggle
+  function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+  }
+  // Load saved theme
+  if (localStorage.getItem('theme') === 'light') {
+    document.documentElement.classList.add('light');
   }
 
   // Init
