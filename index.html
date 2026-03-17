@@ -163,6 +163,22 @@ html.light .icon-light { display:block; }
 
 hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
 
+/* FILE LIST */
+.file-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.file-item { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; font-size:13px; }
+.file-item .file-icon { font-size:18px; flex-shrink:0; }
+.file-item .file-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); }
+.file-item .file-size { font-size:11px; color:var(--text-muted); flex-shrink:0; }
+.file-item .file-remove { width:24px; height:24px; border:none; background:transparent; color:var(--text-muted); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; border-radius:4px; flex-shrink:0; transition:color .2s; line-height:1; }
+.file-item .file-remove:hover { color:#f55a5a; }
+.file-item.file-error { border-color:#f55a5a; }
+.file-item.file-error .file-name { color:#f55a5a; }
+.upload-zone.dragover { border-color:var(--accent); background:rgba(200,245,90,.08); }
+.upload-progress { margin-top:12px; }
+.upload-progress-bar { height:4px; background:var(--border); border-radius:4px; overflow:hidden; margin-bottom:6px; }
+.upload-progress-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .3s; width:0%; }
+.upload-progress-text { font-size:12px; color:var(--text-muted); text-align:center; }
+
 /* TOAST */
 #toast {
   position:fixed; bottom:28px; right:28px; z-index:9999;
@@ -422,12 +438,13 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       </div>
       <div class="field">
         <label>Subir archivos del logo</label>
-        <div class="upload-zone">
-          <input type="file" accept=".svg,.ai,.eps,.png,.jpg,.pdf" multiple />
+        <div class="upload-zone" id="zone-logo" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)" ondrop="dropFiles(event,'logo')">
+          <input type="file" id="input-logo" accept=".svg,.ai,.eps,.png,.jpg,.jpeg,.pdf" multiple onchange="handleFiles(this,'logo')" />
           <div class="upload-icon">📁</div>
           <p><strong>Arrastra archivos aquí</strong> o haz clic para seleccionar</p>
-          <p style="margin-top:4px;font-size:12px">SVG, AI, EPS, PNG, JPG — hasta 20MB</p>
+          <p style="margin-top:4px;font-size:12px">SVG, AI, EPS, PNG, JPG, PDF — máx. 5MB c/u</p>
         </div>
+        <div class="file-list" id="list-logo"></div>
       </div>
     </div>
 
@@ -444,12 +461,13 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       </div>
       <div class="field" style="margin-bottom:14px">
         <label>Subir imágenes disponibles</label>
-        <div class="upload-zone">
-          <input type="file" accept="image/*" multiple />
+        <div class="upload-zone" id="zone-imagenes" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)" ondrop="dropFiles(event,'imagenes')">
+          <input type="file" id="input-imagenes" accept="image/*" multiple onchange="handleFiles(this,'imagenes')" />
           <div class="upload-icon">🏞️</div>
           <p><strong>Arrastra imágenes aquí</strong> o haz clic para seleccionar</p>
-          <p style="margin-top:4px;font-size:12px">JPG, PNG, WEBP — múltiples archivos</p>
+          <p style="margin-top:4px;font-size:12px">JPG, PNG, WEBP — máx. 5MB c/u</p>
         </div>
+        <div class="file-list" id="list-imagenes"></div>
       </div>
       <div class="field"><label>Estilo fotográfico deseado</label><textarea id="fotos-notas" rows="2" placeholder="Ej: fotos cálidas, estilo editorial, mucho contraste..."></textarea></div>
     </div>
@@ -466,12 +484,13 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       </div>
       <div class="field">
         <label>Subir otros archivos</label>
-        <div class="upload-zone">
-          <input type="file" multiple />
+        <div class="upload-zone" id="zone-otros" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)" ondrop="dropFiles(event,'otros')">
+          <input type="file" id="input-otros" multiple onchange="handleFiles(this,'otros')" />
           <div class="upload-icon">📦</div>
           <p><strong>Arrastra archivos aquí</strong> o haz clic para seleccionar</p>
-          <p style="margin-top:4px;font-size:12px">Cualquier formato — ZIP, PDF, MP4, etc.</p>
+          <p style="margin-top:4px;font-size:12px">Cualquier formato — ZIP, PDF, MP4, etc. — máx. 5MB c/u</p>
         </div>
+        <div class="file-list" id="list-otros"></div>
       </div>
     </div>
 
@@ -633,6 +652,89 @@ function previewFont(t) {
   document.getElementById('font-'+t+'-preview').style.fontFamily="'"+n+"',serif";
 }
 
+/* ── ARCHIVOS ── */
+var fileStore = { logo: [], imagenes: [], otros: [] };
+var MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+var fileIcons = {
+  'image': '🖼️', 'pdf': '📄', 'svg': '🎨', 'ai': '🎨', 'eps': '🎨',
+  'zip': '📦', 'mp4': '🎬', 'mov': '🎬', 'default': '📎'
+};
+
+function getIcon(name) {
+  var ext = name.split('.').pop().toLowerCase();
+  if (['jpg','jpeg','png','webp','gif'].includes(ext)) return fileIcons.image;
+  if (ext === 'pdf') return fileIcons.pdf;
+  if (['svg','ai','eps'].includes(ext)) return fileIcons.ai;
+  if (['zip','rar','7z'].includes(ext)) return fileIcons.zip;
+  if (['mp4','mov','avi'].includes(ext)) return fileIcons.mp4;
+  return fileIcons.default;
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+function handleFiles(input, zone) {
+  addFilesToZone(Array.from(input.files), zone);
+  input.value = '';
+}
+
+function dragOver(e, el) {
+  e.preventDefault();
+  el.classList.add('dragover');
+}
+function dragLeave(el) { el.classList.remove('dragover'); }
+function dropFiles(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('dragover');
+  addFilesToZone(Array.from(e.dataTransfer.files), zone);
+}
+
+function addFilesToZone(files, zone) {
+  files.forEach(function(file) {
+    var isTooBig = file.size > MAX_SIZE;
+    var isDupe = fileStore[zone].some(function(f){ return f.name === file.name; });
+    if (isDupe) return;
+    fileStore[zone].push(file);
+    renderFileItem(file, zone, isTooBig);
+  });
+}
+
+function renderFileItem(file, zone, error) {
+  var list = document.getElementById('list-'+zone);
+  var id = 'f-' + zone + '-' + file.name.replace(/[^a-z0-9]/gi,'_');
+  var div = document.createElement('div');
+  div.className = 'file-item' + (error ? ' file-error' : '');
+  div.id = id;
+  div.setAttribute('data-zone', zone);
+  div.setAttribute('data-name', file.name);
+  div.innerHTML = '<span class="file-icon">'+getIcon(file.name)+'</span>'
+    + '<span class="file-name" title="'+file.name+'">'+file.name+'</span>'
+    + '<span class="file-size">'+(error ? '⚠️ Muy grande' : formatSize(file.size))+'</span>'
+    + '<button class="file-remove" onclick="removeFile(this)">×</button>';
+  list.appendChild(div);
+}
+
+function removeFile(btn) {
+  var item = btn.closest('.file-item');
+  var zone = item.getAttribute('data-zone');
+  var name = item.getAttribute('data-name');
+  fileStore[zone] = fileStore[zone].filter(function(f){ return f.name !== name; });
+  item.remove();
+}
+
+function readFileAsBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var r = new FileReader();
+    r.onload = function(){ resolve({ name: file.name, type: file.type, data: r.result.split(',')[1] }); };
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
 /* ── URLS ── */
 function addUrl() {
   var d = document.createElement('div'); d.className='url-entry';
@@ -683,44 +785,84 @@ function showToast(msg, bg, txt) {
 }
 
 /* ── ENVIAR ── */
-function submitForm() {
+async function submitForm() {
   if (!gv('empresa-nombre') || !gv('contacto-email')) {
     showToast('⚠️ Completa al menos empresa y email','#f5a55a','#0e0e0e'); return;
   }
+
+  // Validar tamaño de archivos
+  var allFiles = fileStore.logo.concat(fileStore.imagenes).concat(fileStore.otros);
+  var oversized = allFiles.filter(function(f){ return f.size > MAX_SIZE; });
+  if (oversized.length > 0) {
+    showToast('⚠️ Hay archivos de más de 5MB. Elimínalos antes de enviar.','#f5a55a','#0e0e0e'); return;
+  }
+
   var btn = document.querySelector('.btn-submit');
-  btn.disabled = true; btn.textContent = '⏳ Enviando...';
+  btn.disabled = true;
 
-  var data = {
-    empresa: gv('empresa-nombre'), contacto: gv('contacto-nombre'),
-    email: gv('contacto-email'), telefono: gv('contacto-tel'),
-    ciudad: gv('empresa-ciudad'), webActual: gv('empresa-web'),
-    descripcion: gv('empresa-descripcion'), publico: gv('empresa-publico'),
-    competidores: gv('empresa-competidores'),
-    color1: gv('color1'), color2: gv('color2'), color3: gv('color3'), color4: gv('color4'),
-    fontTitulo: gv('font-titulo'), fontCuerpo: gv('font-cuerpo'),
-    estilos: cBoxes('#estilo-grid'), tipoSitio: cRadio('tipo-sitio'),
-    paginas: cBoxes('#paginas-grid'), idiomas: cBoxes('#idiomas-grid'),
-    textos: cRadio('textos'), logo: cRadio('logo'),
-    fotos: cRadio('fotos'), fotosNotas: gv('fotos-notas'),
-    recursos: cBoxes('#recursos-grid'),
-    objetivos: cBoxes('#objetivo-grid'), funcionalidades: cBoxes('#func-grid'),
-    funcExtra: gv('func-extra'), fechaEntrega: gv('fecha-entrega'),
-    hosting: cRadio('hosting'), presupuesto: cRadio('presupuesto'),
-    urgencia: document.getElementById('urgencia-val').textContent,
-    contactoPref: cRadio('contacto-pref'), notas: gv('notas-finales')
-  };
+  // Mostrar progreso
+  var progressHtml = '<div class="upload-progress"><div class="upload-progress-bar"><div class="upload-progress-fill" id="prog-fill"></div></div><div class="upload-progress-text" id="prog-text">Preparando envío...</div></div>';
+  document.getElementById('summary-grid').insertAdjacentHTML('afterend', progressHtml);
 
-  fetch(APPS_SCRIPT_URL, {
-    method:'POST', mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(data)
-  }).then(function(){
-    showToast('✅ Briefing enviado correctamente','#c8f55a','#0e0e0e');
+  function setProgress(pct, msg) {
+    var fill = document.getElementById('prog-fill');
+    var txt = document.getElementById('prog-text');
+    if (fill) fill.style.width = pct + '%';
+    if (txt) txt.textContent = msg;
+    btn.textContent = msg;
+  }
+
+  try {
+    setProgress(10, '⏳ Leyendo archivos...');
+
+    // Convertir archivos a base64
+    var logoB64 = await Promise.all(fileStore.logo.map(readFileAsBase64));
+    var imagenesB64 = await Promise.all(fileStore.imagenes.map(readFileAsBase64));
+    var otrosB64 = await Promise.all(fileStore.otros.map(readFileAsBase64));
+
+    setProgress(30, '⏳ Enviando datos...');
+
+    var data = {
+      empresa: gv('empresa-nombre'), contacto: gv('contacto-nombre'),
+      email: gv('contacto-email'), telefono: gv('contacto-tel'),
+      ciudad: gv('empresa-ciudad'), webActual: gv('empresa-web'),
+      descripcion: gv('empresa-descripcion'), publico: gv('empresa-publico'),
+      competidores: gv('empresa-competidores'),
+      color1: gv('color1'), color2: gv('color2'), color3: gv('color3'), color4: gv('color4'),
+      fontTitulo: gv('font-titulo'), fontCuerpo: gv('font-cuerpo'),
+      estilos: cBoxes('#estilo-grid'), tipoSitio: cRadio('tipo-sitio'),
+      paginas: cBoxes('#paginas-grid'), idiomas: cBoxes('#idiomas-grid'),
+      textos: cRadio('textos'), logo: cRadio('logo'),
+      fotos: cRadio('fotos'), fotosNotas: gv('fotos-notas'),
+      recursos: cBoxes('#recursos-grid'),
+      objetivos: cBoxes('#objetivo-grid'), funcionalidades: cBoxes('#func-grid'),
+      funcExtra: gv('func-extra'), fechaEntrega: gv('fecha-entrega'),
+      hosting: cRadio('hosting'), presupuesto: cRadio('presupuesto'),
+      urgencia: document.getElementById('urgencia-val').textContent,
+      contactoPref: cRadio('contacto-pref'), notas: gv('notas-finales'),
+      archivos: { logo: logoB64, imagenes: imagenesB64, otros: otrosB64 }
+    };
+
+    setProgress(60, '⏳ Subiendo a Drive...');
+
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    setProgress(100, '✅ Enviado');
+    showToast('✅ Briefing y archivos enviados correctamente','#c8f55a','#0e0e0e');
     btn.textContent = '✅ Enviado';
-  }).catch(function(){
+
+  } catch(err) {
     showToast('❌ Error al enviar. Intenta nuevamente.','#f55a5a','#fff');
-    btn.disabled = false; btn.textContent = '📨 Enviar Briefing';
-  });
+    btn.disabled = false;
+    btn.textContent = '📨 Enviar Briefing';
+    var prog = document.querySelector('.upload-progress');
+    if (prog) prog.remove();
+  }
 }
 
 /* ── TEMA ── */
