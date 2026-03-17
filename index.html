@@ -179,6 +179,19 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
 .upload-progress-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .3s; width:0%; }
 .upload-progress-text { font-size:12px; color:var(--text-muted); text-align:center; }
 
+/* HERO CONTACT */
+.hero-contact { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+.contact-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 18px; border-radius:8px; font-size:13px; font-weight:500;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+  background:var(--surface2); border:1.5px solid var(--border); color:var(--text);
+  text-decoration:none;
+}
+.contact-btn:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+.contact-wa { background:rgba(37,211,102,.1); border-color:rgba(37,211,102,.3); color:#25d366; }
+.contact-wa:hover { background:rgba(37,211,102,.2); border-color:#25d366; color:#25d366; }
+
 /* TOAST */
 #toast {
   position:fixed; bottom:28px; right:28px; z-index:9999;
@@ -194,9 +207,19 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <span class="badge">Brief de Proyecto</span>
+    <span class="badge">Brief de Proyecto — Manuel Rojas</span>
     <h1>Cuéntanos sobre<br/>tu <em>proyecto web</em></h1>
-    <p>Completa este formulario para que podamos entender tu marca, objetivos y necesidades antes de comenzar a diseñar.</p>
+    <p>Completa este formulario para que pueda entender tu marca, objetivos y necesidades antes de comenzar a diseñar.</p>
+    <div class="hero-contact">
+      <button class="contact-btn" onclick="copyEmail()">
+        <span>✉️</span>
+        <span id="email-label">sander.rojasc@gmail.com</span>
+      </button>
+      <a class="contact-btn contact-wa" href="https://wa.me/56984060791?text=Hola%20Manuel%2C%20me%20interesa%20hablar%20sobre%20mi%20proyecto%20web" target="_blank">
+        <span>💬</span>
+        <span>WhatsApp</span>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -617,7 +640,7 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
 <div id="toast"></div>
 
 <script>
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQLH7cO1EisaZOf3QvG7-zZdHFCGUKyS89W6YPABHyYR_ugYgML7QXeRhWej0sg6lV/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiFEKD600vx8mDbdLWszdgfrlCu35319bMz8dLySQ2wyl89ElvCx69p6FG2OKKS8Jr/exec';
 var urgLabels = ['','Muy baja','Baja','Media','Alta','Muy urgente'];
 
 /* ── NAVEGACIÓN ── */
@@ -845,12 +868,7 @@ async function submitForm() {
 
     setProgress(60, '⏳ Subiendo a Drive...');
 
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    await sendToScript(data);
 
     setProgress(100, '✅ Enviado');
     showToast('✅ Briefing y archivos enviados correctamente','#c8f55a','#0e0e0e');
@@ -863,6 +881,45 @@ async function submitForm() {
     var prog = document.querySelector('.upload-progress');
     if (prog) prog.remove();
   }
+}
+
+function sendToScript(data) {
+  return new Promise(function(resolve, reject) {
+    var callbackName = 'cb_' + Date.now();
+    window[callbackName] = function(response) {
+      delete window[callbackName];
+      document.head.removeChild(script);
+      if (response && response.ok) resolve(response);
+      else reject(new Error(response ? response.error : 'Error desconocido'));
+    };
+    var encoded = encodeURIComponent(JSON.stringify(data));
+    var script = document.createElement('script');
+    script.src = APPS_SCRIPT_URL + '?callback=' + callbackName + '&data=' + encoded;
+    script.onerror = function() {
+      delete window[callbackName];
+      reject(new Error('Error de red'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+/* ── COPIAR EMAIL ── */
+function copyEmail() {
+  navigator.clipboard.writeText('sander.rojasc@gmail.com').then(function() {
+    var label = document.getElementById('email-label');
+    label.textContent = '✅ Copiado';
+    setTimeout(function(){ label.textContent = 'sander.rojasc@gmail.com'; }, 2000);
+  }).catch(function() {
+    // fallback para navegadores sin clipboard API
+    var ta = document.createElement('textarea');
+    ta.value = 'sander.rojasc@gmail.com';
+    document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    var label = document.getElementById('email-label');
+    label.textContent = '✅ Copiado';
+    setTimeout(function(){ label.textContent = 'sander.rojasc@gmail.com'; }, 2000);
+  });
 }
 
 /* ── TEMA ── */
