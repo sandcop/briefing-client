@@ -112,10 +112,19 @@ html.light .icon-light { display:block; }
 
 /* RADIOS */
 .radio-group { display:flex; flex-wrap:wrap; gap:10px; }
-.radio-item { display:flex; align-items:center; gap:8px; padding:9px 16px; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; transition:all .2s; user-select:none; }
+.radio-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  background:var(--surface2); border:1.5px solid var(--border); border-radius:8px;
+  cursor:pointer; font-size:13px; line-height:1.4;
+  transition:all .2s; user-select:none;
+  white-space:normal; min-width:130px; flex:1 1 auto;
+}
 .radio-item:hover { border-color:var(--accent); }
-.radio-item input { accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
+.radio-item input { accent-color:var(--accent); cursor:pointer; flex-shrink:0; width:15px; height:15px; }
 .radio-item.selected { border-color:var(--accent); background:rgba(200,245,90,.06); }
+.radio-group.col { flex-direction:column; }
+.radio-group.col .radio-item { flex:unset; width:100%; min-width:0; }
 
 /* RANGE */
 .range-wrap { display:flex; align-items:center; gap:14px; }
@@ -257,10 +266,10 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       <hr class="divider" />
       <div class="field">
         <label>¿Tiene guía de marca / brand guidelines?</label>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="guia" value="Sí, la tenemos" onchange="radioSel(this)" /> Sí, la tenemos</label>
-          <label class="radio-item"><input type="radio" name="guia" value="En proceso" onchange="radioSel(this)" /> En proceso</label>
-          <label class="radio-item"><input type="radio" name="guia" value="No tenemos" onchange="radioSel(this)" /> No tenemos</label>
+        <div class="radio-group col">
+          <label class="radio-item"><input type="radio" name="guia" value="Sí, la tenemos" onchange="radioSel(this)" /> <span>Sí, la tenemos</span></label>
+          <label class="radio-item"><input type="radio" name="guia" value="En proceso" onchange="radioSel(this)" /> <span>En proceso</span></label>
+          <label class="radio-item"><input type="radio" name="guia" value="No tenemos" onchange="radioSel(this)" /> <span>No tenemos</span></label>
         </div>
       </div>
     </div>
@@ -325,10 +334,10 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
     <div class="card">
       <div class="card-title">Tipo de sitio</div>
       <div class="radio-group">
-        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Sitio corporativo" onchange="radioSel(this)" /> Sitio corporativo</label>
-        <label class="radio-item"><input type="radio" name="tipo-sitio" value="E-commerce / Tienda online" onchange="radioSel(this)" /> E-commerce</label>
-        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Landing page" onchange="radioSel(this)" /> Landing page</label>
-        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Portafolio" onchange="radioSel(this)" /> Portafolio</label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Sitio corporativo" onchange="radioSel(this)" /> <span>Sitio corporativo</span></label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="E-commerce / Tienda online" onchange="radioSel(this)" /> <span>E-commerce</span></label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Landing page" onchange="radioSel(this)" /> <span>Landing page</span></label>
+        <label class="radio-item"><input type="radio" name="tipo-sitio" value="Portafolio" onchange="radioSel(this)" /> <span>Portafolio</span></label>
         <label class="radio-item"><input type="radio" name="tipo-sitio" value="Blog / Revista" onchange="radioSel(this)" /> Blog / Revista</label>
         <label class="radio-item"><input type="radio" name="tipo-sitio" value="Plataforma / App web" onchange="radioSel(this)" /> Plataforma / App web</label>
       </div>
@@ -367,10 +376,10 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
         </div>
         <div class="field">
           <label>¿Quién provee los textos?</label>
-          <div class="radio-group" style="flex-direction:column;gap:8px">
-            <label class="radio-item"><input type="radio" name="textos" value="Sí, los entrego yo" onchange="radioSel(this)" /> Los entrego yo</label>
-            <label class="radio-item"><input type="radio" name="textos" value="Necesito ayuda con redacción" onchange="radioSel(this)" /> Necesito redacción</label>
-            <label class="radio-item"><input type="radio" name="textos" value="Combinado" onchange="radioSel(this)" /> Combinado</label>
+          <div class="radio-group col">
+            <label class="radio-item"><input type="radio" name="textos" value="Sí, los entrego yo" onchange="radioSel(this)" /> <span>Los entrego yo</span></label>
+            <label class="radio-item"><input type="radio" name="textos" value="Necesito ayuda con redacción" onchange="radioSel(this)" /> <span>Necesito redacción</span></label>
+            <label class="radio-item"><input type="radio" name="textos" value="Combinado" onchange="radioSel(this)" /> <span>Combinado</span></label>
           </div>
         </div>
       </div>
@@ -394,11 +403,11 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       <div class="grid-2" style="margin-bottom:16px">
         <div class="field">
           <label>Estado del logo</label>
-          <div class="radio-group" style="flex-direction:column;gap:8px">
+          <div class="radio-group col">
             <label class="radio-item"><input type="radio" name="logo" value="Sí, en formato vectorial (AI/SVG/EPS)" onchange="radioSel(this)" /> Sí, vectorial (AI/SVG/EPS)</label>
             <label class="radio-item"><input type="radio" name="logo" value="Sí, solo en PNG/JPG" onchange="radioSel(this)" /> Sí, solo PNG/JPG</label>
-            <label class="radio-item"><input type="radio" name="logo" value="No, necesito diseñar logo" onchange="radioSel(this)" /> Necesito diseño de logo</label>
-            <label class="radio-item"><input type="radio" name="logo" value="Está en proceso" onchange="radioSel(this)" /> Está en proceso</label>
+            <label class="radio-item"><input type="radio" name="logo" value="No, necesito diseñar logo" onchange="radioSel(this)" /> <span>Necesito diseño de logo</span></label>
+            <label class="radio-item"><input type="radio" name="logo" value="Está en proceso" onchange="radioSel(this)" /> <span>Está en proceso</span></label>
           </div>
         </div>
         <div class="field">
@@ -426,11 +435,11 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       <div class="card-title">Fotografía</div>
       <div class="field" style="margin-bottom:14px">
         <label>Situación fotográfica</label>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="fotos" value="Sí, tengo fotografía profesional" onchange="radioSel(this)" /> Fotografía profesional</label>
-          <label class="radio-item"><input type="radio" name="fotos" value="Sí, pero son fotos de celular" onchange="radioSel(this)" /> Fotos de celular</label>
-          <label class="radio-item"><input type="radio" name="fotos" value="No, usar banco de imágenes" onchange="radioSel(this)" /> Banco de imágenes</label>
-          <label class="radio-item"><input type="radio" name="fotos" value="Necesito sesión fotográfica" onchange="radioSel(this)" /> Necesito sesión</label>
+        <div class="radio-group col">
+          <label class="radio-item"><input type="radio" name="fotos" value="Sí, tengo fotografía profesional" onchange="radioSel(this)" /> <span>Fotografía profesional</span></label>
+          <label class="radio-item"><input type="radio" name="fotos" value="Sí, pero son fotos de celular" onchange="radioSel(this)" /> <span>Fotos de celular</span></label>
+          <label class="radio-item"><input type="radio" name="fotos" value="No, usar banco de imágenes" onchange="radioSel(this)" /> <span>Banco de imágenes</span></label>
+          <label class="radio-item"><input type="radio" name="fotos" value="Necesito sesión fotográfica" onchange="radioSel(this)" /> <span>Necesito sesión</span></label>
         </div>
       </div>
       <div class="field" style="margin-bottom:14px">
@@ -516,21 +525,21 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
         <div class="field"><label>Fecha de entrega ideal</label><input type="date" id="fecha-entrega" /></div>
         <div class="field">
           <label>¿Tiene dominio y hosting?</label>
-          <div class="radio-group" style="flex-direction:column;gap:8px">
-            <label class="radio-item"><input type="radio" name="hosting" value="Sí, tengo ambos" onchange="radioSel(this)" /> Sí, tengo ambos</label>
-            <label class="radio-item"><input type="radio" name="hosting" value="Solo el dominio" onchange="radioSel(this)" /> Solo el dominio</label>
-            <label class="radio-item"><input type="radio" name="hosting" value="No, necesito cotizar" onchange="radioSel(this)" /> No, necesito cotizar</label>
+          <div class="radio-group col">
+            <label class="radio-item"><input type="radio" name="hosting" value="Sí, tengo ambos" onchange="radioSel(this)" /> <span>Sí, tengo ambos</span></label>
+            <label class="radio-item"><input type="radio" name="hosting" value="Solo el dominio" onchange="radioSel(this)" /> <span>Solo el dominio</span></label>
+            <label class="radio-item"><input type="radio" name="hosting" value="No, necesito cotizar" onchange="radioSel(this)" /> <span>No, necesito cotizar</span></label>
           </div>
         </div>
       </div>
       <div class="field" style="margin-bottom:16px">
         <label>Rango de presupuesto</label>
         <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="presupuesto" value="Menos de $500 USD" onchange="radioSel(this)" /> &lt; $500</label>
-          <label class="radio-item"><input type="radio" name="presupuesto" value="$500 – $1.500 USD" onchange="radioSel(this)" /> $500–$1.500</label>
-          <label class="radio-item"><input type="radio" name="presupuesto" value="$1.500 – $5.000 USD" onchange="radioSel(this)" /> $1.500–$5.000</label>
-          <label class="radio-item"><input type="radio" name="presupuesto" value="Más de $5.000 USD" onchange="radioSel(this)" /> &gt; $5.000</label>
-          <label class="radio-item"><input type="radio" name="presupuesto" value="Por definir" onchange="radioSel(this)" /> Por definir</label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Menos de $500 USD" onchange="radioSel(this)" /> <span>&lt; $500</span></label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="$500 – $1.500 USD" onchange="radioSel(this)" /> <span>$500–$1.500</span></label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="$1.500 – $5.000 USD" onchange="radioSel(this)" /> <span>$1.500–$5.000</span></label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Más de $5.000 USD" onchange="radioSel(this)" /> <span>&gt; $5.000</span></label>
+          <label class="radio-item"><input type="radio" name="presupuesto" value="Por definir" onchange="radioSel(this)" /> <span>Por definir</span></label>
         </div>
       </div>
       <div class="field">
@@ -548,10 +557,10 @@ hr.divider { border:none; border-top:1px solid var(--border); margin:22px 0; }
       <div class="field">
         <label>¿Cómo prefieres que te contactemos?</label>
         <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="contacto-pref" value="Email" onchange="radioSel(this)" /> Email</label>
-          <label class="radio-item"><input type="radio" name="contacto-pref" value="WhatsApp" onchange="radioSel(this)" /> WhatsApp</label>
-          <label class="radio-item"><input type="radio" name="contacto-pref" value="Videollamada" onchange="radioSel(this)" /> Videollamada</label>
-          <label class="radio-item"><input type="radio" name="contacto-pref" value="Presencial" onchange="radioSel(this)" /> Presencial</label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Email" onchange="radioSel(this)" /> <span>Email</span></label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="WhatsApp" onchange="radioSel(this)" /> <span>WhatsApp</span></label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Videollamada" onchange="radioSel(this)" /> <span>Videollamada</span></label>
+          <label class="radio-item"><input type="radio" name="contacto-pref" value="Presencial" onchange="radioSel(this)" /> <span>Presencial</span></label>
         </div>
       </div>
     </div>
